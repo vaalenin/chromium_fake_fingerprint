@@ -1,0 +1,4 @@
+Document
+++Group IsControlElement=false
+++++ComboBox ExpandCollapse.ExpandCollapseState='LeafNode'
+<-- End-of-file -->

@@ -1,0 +1,17 @@
+{
+  "format_version": "1.1",
+  "package_name": "infra/tools/luci/swarming/windows-386",
+  "version_file": ".versions/swarming.exe.cipd_version",
+  "files": [
+    {
+      "name": "swarming.exe",
+      "size": 13125632,
+      "hash": "Y9-biWNJ8Adtk5sFujDlrIfDlU9ehNP7OXMg3v_lrncC"
+    },
+    {
+      "name": ".versions/swarming.exe.cipd_version",
+      "size": 126,
+      "hash": "VTnZ-YxI_9ZFEiaifovVUQBNo2NAIlRETgLxzimm_2QC"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+Document
+++Group IsControlElement=false
+++++Text Name='Before portal'
+++Button Name='portal'
+++Group IsControlElement=false
+++++Text Name='After portal'
+<-- End-of-file -->

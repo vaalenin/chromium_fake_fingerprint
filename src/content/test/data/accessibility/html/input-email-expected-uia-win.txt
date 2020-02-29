@@ -1,0 +1,4 @@
+Document LocalizedControlType='document'
+++Group LocalizedControlType='group' IsControlElement=false
+++++Edit LocalizedControlType='email' Value.Value='someone@example.com'
+<-- End-of-file -->

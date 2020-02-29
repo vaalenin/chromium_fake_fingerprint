@@ -1,0 +1,163 @@
+# Copyright 2019 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/chrome_build.gni")
+import("//build/config/sanitizers/sanitizers.gni")
+import("//build/util/process_version.gni")
+import("//chrome/updater/branding.gni")
+import("//testing/test.gni")
+
+# Run 'gn check out\Default --check-generated //chrome/updater/*' every time
+# dependencies are modified until a presubmit is written to automatically
+# check that the C++ includes match the build dependency graph.
+
+# TODO(sorin): make the code build on Linux. https://crbug.com/1014320
+group("updater") {
+  if (is_win) {
+    deps = [ "//chrome/updater/win" ]
+  }
+  if (is_mac) {
+    deps = [ "//chrome/updater/mac" ]
+  }
+  if (is_win || is_mac) {
+    deps += [ "//chrome/updater/tools:tools" ]
+  }
+}
+
+# Conditional build is needed, otherwise the analyze script on Linux
+# requires all targets and it is going to include the targets below.
+if (is_win || is_mac) {
+  source_set("base") {
+    sources = [
+      "action_handler.h",
+      "constants.cc",
+      "constants.h",
+      "crash_client.cc",
+      "crash_client.h",
+      "crash_reporter.cc",
+      "crash_reporter.h",
+      "installer.cc",
+      "installer.h",
+      "installer_win.cc",
+      "patcher.cc",
+      "patcher.h",
+      "prefs.cc",
+      "prefs.h",
+      "registration_data.cc",
+      "registration_data.h",
+      "unzipper.cc",
+      "unzipper.h",
+      "update_service.h",
+      "util.cc",
+      "util.h",
+    ]
+
+    deps = [
+      ":version_header",
+      "//base",
+      "//components/crx_file",
+      "//components/prefs",
+      "//components/update_client",
+      "//courgette:bsdiff",
+      "//courgette:courgette_lib",
+      "//third_party/crashpad/crashpad/client",
+      "//third_party/crashpad/crashpad/handler",
+      "//third_party/zlib/google:zip",
+      "//url",
+    ]
+  }
+
+  source_set("lib") {
+    sources = [
+      "configurator.cc",
+      "configurator.h",
+      "update_apps.cc",
+      "update_apps.h",
+      "update_service_in_process.cc",
+      "update_service_in_process.h",
+      "updater.cc",
+      "updater.h",
+    ]
+
+    deps = [
+      ":base",
+      ":version_header",
+      "//base",
+      "//chrome/updater/server",
+      "//components/crash/core/common:crash_key",
+      "//components/prefs",
+      "//components/update_client",
+      "//components/version_info",
+      "//url",
+    ]
+
+    if (is_win) {
+      deps += [ "//chrome/updater/win:lib" ]
+    }
+
+    if (is_mac) {
+      deps += [
+        "//chrome/updater/mac:network_fetcher_sources",
+        "//chrome/updater/mac:updater_setup_sources",
+      ]
+    }
+  }
+
+  process_version("version_header") {
+    sources = [ "//chrome/VERSION" ]
+
+    extra_args = [
+      "-e",
+      "COMPANY_FULLNAME=\"$updater_company_full_name\"",
+      "-e",
+      "COMPANY_SHORTNAME=\"$updater_company_short_name\"",
+      "-e",
+      "PRODUCT_FULLNAME=\"$updater_product_full_name\"",
+      "-e",
+      "COPYRIGHT=\"updater_copyright\"",
+      "-e",
+      "MAC_BUNDLE_IDENTIFIER=\"$mac_updater_bundle_identifier\"",
+    ]
+
+    template_file = "updater_version.h.in"
+    output = "$target_gen_dir/updater_version.h"
+  }
+
+  test("updater_tests") {
+    testonly = true
+
+    sources = [
+      "run_all_unittests.cc",
+      "updater_unittest.cc",
+    ]
+
+    deps = [
+      ":lib",
+      ":updater",
+      ":version_header",
+      "//base",
+      "//base/test:test_support",
+      "//chrome/common:constants",
+      "//testing/gtest",
+    ]
+
+    if (is_win) {
+      deps += [ "//chrome/updater/win:updater_tests" ]
+
+      data_deps = [ "//chrome/updater/win:updater" ]
+    }
+
+    if (is_mac) {
+      deps += [
+        "//chrome/updater/mac:updater_bundle",
+        "//chrome/updater/mac:updater_setup_tests",
+        "//chrome/updater/mac:updater_tests",
+      ]
+    }
+
+    if (is_win || is_mac) {
+      deps += [ "//chrome/updater/tools:unittest" ]
+    }
+  }
+}

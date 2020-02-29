@@ -1,0 +1,6 @@
+include_rules = [
+  "+components/browser_ui/util/android",
+  "+components/crash/android/java",
+  "+components/minidump_uploader",
+  "+services/device/public/java/src/org/chromium/device/geolocation",
+]

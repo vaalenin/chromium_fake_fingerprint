@@ -1,0 +1,15 @@
+Document
+++List
+++++ListItem
+++++++Group
+++++++++Text Name='• ' IsControlElement=false
+++++++Text Name='Item 1' IsControlElement=false
+++++ListItem
+++++++Group
+++++++++Text Name='• ' IsControlElement=false
+++++++Text Name='Item 2' IsControlElement=false
+++++ListItem
+++++++Group
+++++++++Text Name='• ' IsControlElement=false
+++++++Text Name='Item 3' IsControlElement=false
+<-- End-of-file -->

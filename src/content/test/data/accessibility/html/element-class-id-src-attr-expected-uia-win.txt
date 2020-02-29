@@ -1,0 +1,5 @@
+Document
+++Text Name='Image'
+++++Text Name='Image' IsControlElement=false
+++Image Name='ImageAlt'
+<-- End-of-file -->

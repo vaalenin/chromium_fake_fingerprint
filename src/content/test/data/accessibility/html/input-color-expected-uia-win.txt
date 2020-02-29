@@ -1,0 +1,4 @@
+Document
+++Group IsControlElement=false
+++++Button LocalizedControlType='color picker' Value.Value='100% red 60% green 0% blue'
+<-- End-of-file -->

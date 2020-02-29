@@ -1,0 +1,127 @@
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+syntax = "proto2";
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "org.chromium.chrome.browser.autofill_assistant.proto";
+option java_multiple_files = true;
+
+package autofill_assistant;
+
+import "model.proto";
+import "view_layout.proto";
+
+message InteractionsProto {
+  repeated InteractionProto interactions = 1;
+}
+
+// An interaction consists of a trigger event and a series of actions.
+message InteractionProto {
+  // Functions to call each time the event happens, in the specified order.
+  repeated CallbackProto callbacks = 1;
+  // The trigger event for |callbacks|.
+  optional EventProto trigger_event = 2;
+}
+
+// UI Actions to invoke.
+message CallbackProto {
+  oneof kind {
+    SetModelValueProto set_value = 1;
+    ShowInfoPopupProto show_info_popup = 2;
+    ShowListPopupProto show_list_popup = 3;
+    ComputeValueProto compute_value = 4;
+  }
+}
+
+message EventProto {
+  oneof kind {
+    OnModelValueChangedEventProto on_value_changed = 1;
+    OnViewClickedEventProto on_view_clicked = 2;
+  }
+}
+
+// Event that is triggered whenever |model_identifier| changes.
+message OnModelValueChangedEventProto {
+  // The identifier of the value to observe.
+  optional string model_identifier = 1;
+}
+
+// Event that is triggered whenever |view_identifier| is clicked.
+message OnViewClickedEventProto {
+  // The identifier of the view to observe.
+  optional string view_identifier = 1;
+}
+
+// Callback that writes the specified value to |model_identifier|.
+message SetModelValueProto {
+  // The model identifier to write to.
+  optional string model_identifier = 1;
+  // The value to write.
+  optional ValueProto value = 2;
+}
+
+// Computes a value and stores the result to |result_model_identifier|.
+message ComputeValueProto {
+  oneof kind {
+    // Computes the logical AND of the specified model identifiers.
+    BooleanAndProto boolean_and = 2;
+    // Computes the logical OR of the specified model identifiers.
+    BooleanOrProto boolean_or = 3;
+    // Computes the logical NOT of the specified model identifiers.
+    BooleanNotProto boolean_not = 4;
+  }
+
+  // The model identifier to write the result to.
+  optional string result_model_identifier = 1;
+}
+
+// Performs a logical AND on all specified values.
+message BooleanAndProto {
+  // The model identifiers to logically AND. All identifiers must point to
+  // boolean ValueProtos.
+  repeated string model_identifiers = 1;
+}
+
+// Performs a logical OR on all specified values.
+message BooleanOrProto {
+  // The model identifiers to logically OR. All identifiers must point to
+  // boolean ValueProtos.
+  repeated string model_identifiers = 1;
+}
+
+// Performs a logical NOT on the specified value.
+message BooleanNotProto {
+  // The model identifier to logically invert. Must point to a boolean value.
+  optional string model_identifier = 1;
+}
+
+// Displays a standard info popup.
+message ShowInfoPopupProto {
+  optional InfoPopupProto info_popup = 1;
+}
+
+// Displays a popup showing a list of strings to choose from. Depending on
+// |allow_multiselect|, users will be able to select one or multiple items from
+// the list.
+message ShowListPopupProto {
+  // The popup item type, corresponding to
+  // chromium/content/browser/input/PopupItemType.java.
+  enum ItemType {
+    GROUP = 0;
+    DISABLED = 1;
+    ENABLED = 2;
+  }
+  // The item names to show in the list. Must be a list of strings.
+  optional string item_names_model_identifier = 1;
+  // Optional, must be the same length as the list stored at
+  // |items_list_model_identifier| if specified. Will default to ENABLED for all
+  // items if not specified. Must be a list of int32 |ItemType| if specified.
+  optional string item_types_model_identifier = 2;
+  // The indices of the selected items (both input and output). Must be a list
+  // of integers.
+  optional string selected_item_indices_model_identifier = 3;
+  // Whether to allow the selection of multiple items or not.
+  optional bool allow_multiselect = 4;
+}

@@ -1,0 +1,4 @@
+{
+  "subdir": "src/tools/skia_goldctl/win",
+  "package_name": "skia/tools/goldctl/windows-amd64"
+}

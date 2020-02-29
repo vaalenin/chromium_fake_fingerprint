@@ -1,0 +1,6 @@
+Document
+++Group Name='Fig.1 - A green Box'
+++++Image Name='This is a green box.'
+++++Text IsControlElement=false
+++++++Text Name='Fig.1 - A green Box'
+<-- End-of-file -->

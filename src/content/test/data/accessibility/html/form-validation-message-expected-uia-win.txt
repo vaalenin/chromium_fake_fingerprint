@@ -1,0 +1,7 @@
+Document
+++Group IsControlElement=false
+++++Text
+++++++Text Name='Pet name:'
+++++Edit Name='Pet name:' IsRequiredForForm=true
+++Text Name='Please enter pet name'
+<-- End-of-file -->

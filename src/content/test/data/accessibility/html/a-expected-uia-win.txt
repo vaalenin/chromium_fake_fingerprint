@@ -1,0 +1,5 @@
+Document
+++Group IsControlElement=false
+++++Hyperlink Name='normal link'
+++++++Text Name='normal link' IsControlElement=false
+<-- End-of-file -->

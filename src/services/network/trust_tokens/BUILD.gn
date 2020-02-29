@@ -1,0 +1,93 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//third_party/protobuf/proto_library.gni")
+
+source_set("trust_tokens") {
+  visibility = [
+    ":tests",
+    "//services/network:network_service",
+    "//services/network:tests",
+  ]
+
+  sources = [
+    "in_memory_trust_token_persister.cc",
+    "in_memory_trust_token_persister.h",
+    "sqlite_trust_token_persister.cc",
+    "sqlite_trust_token_persister.h",
+    "trust_token_database_owner.cc",
+    "trust_token_database_owner.h",
+    "trust_token_http_headers.h",
+    "trust_token_key_commitment_controller.cc",
+    "trust_token_key_commitment_controller.h",
+    "trust_token_key_commitment_result.cc",
+    "trust_token_key_commitment_result.h",
+    "trust_token_operation_status.h",
+    "trust_token_parameterization.h",
+    "trust_token_persister.h",
+    "trust_token_request_helper.h",
+    "trust_token_store.cc",
+    "trust_token_store.h",
+    "types.cc",
+    "types.h",
+  ]
+
+  deps = [
+    ":storage_proto",
+    "//base",
+    "//components/sqlite_proto",
+    "//services/network/public/cpp",
+    "//services/network/public/mojom",
+    "//sql",
+    "//url",
+  ]
+
+  public_deps = [ ":public_proto" ]
+}
+
+source_set("tests") {
+  testonly = true
+
+  sources = [
+    "sqlite_trust_token_persister_unittest.cc",
+    "trust_token_database_owner_unittest.cc",
+    "trust_token_key_commitment_controller_unittest.cc",
+    "trust_token_persister_unittest.cc",
+    "trust_token_store_unittest.cc",
+    "types_unittest.cc",
+  ]
+
+  deps = [
+    ":storage_proto",
+    ":trust_tokens",
+    "//base",
+    "//base/test:test_support",
+    "//components/sqlite_proto",
+    "//net",
+    "//net:test_support",
+    "//net/traffic_annotation:test_support",
+    "//services/network:test_support",
+    "//testing/gmock",
+    "//testing/gtest",
+    "//url",
+  ]
+}
+
+# public.proto contains datatypes intended
+# to be exposed to Trust Tokens consumers.
+proto_library("public_proto") {
+  sources = [ "proto/public.proto" ]
+
+  extra_configs = [ "//build/config/compiler:wexit_time_destructors" ]
+}
+
+# storage.proto contains datatypes internal
+# to the implementation of Trust Token state
+# persistent storage.
+proto_library("storage_proto") {
+  sources = [ "proto/storage.proto" ]
+  deps = [ ":public_proto" ]
+
+  extra_configs = [ "//build/config/compiler:wexit_time_destructors" ]
+}

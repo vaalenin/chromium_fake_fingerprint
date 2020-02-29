@@ -1,0 +1,33 @@
+{
+  "layers": [
+    {
+      "name": "Scrolling background of LayoutView #document",
+      "bounds": [800, 600],
+      "contentsOpaque": true,
+      "backgroundColor": "#FFFFFF",
+      "paintInvalidations": [
+        {
+          "object": "LayoutNGBlockFlow (positioned) A id='link' class='updated'",
+          "rect": [48, 88, 90, 25],
+          "reason": "appeared"
+        },
+        {
+          "object": "LayoutNGBlockFlow (positioned) A id='link' class='updated'",
+          "rect": [48, 107, 90, 6],
+          "reason": "incremental"
+        },
+        {
+          "object": "NGPhysicalTextFragment 'Lorem Ipsum'",
+          "rect": [48, 88, 86, 19],
+          "reason": "subtree"
+        },
+        {
+          "object": "LayoutNGBlockFlow (positioned) A id='link' class='updated'",
+          "rect": [134, 88, 4, 19],
+          "reason": "incremental"
+        }
+      ]
+    }
+  ]
+}
+

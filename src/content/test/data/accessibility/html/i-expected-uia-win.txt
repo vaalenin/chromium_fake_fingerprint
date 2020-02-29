@@ -1,0 +1,6 @@
+Document
+++Group IsControlElement=false
+++++Text Name='This is to check '
+++++Text Name='italic property'
+++++Text Name=' using i tag.'
+<-- End-of-file -->

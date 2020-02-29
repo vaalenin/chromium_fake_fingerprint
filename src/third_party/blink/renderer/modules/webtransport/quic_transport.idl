@@ -1,0 +1,31 @@
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// https://wicg.github.io/web-transport/#quic-transport
+[
+    ActiveScriptWrappable,
+    Exposed=(Window,Worker),
+    RuntimeEnabled=QuicTransport
+] interface QuicTransport {
+  [CallWith=ScriptState, RaisesException] constructor(USVString url);
+  // QuicTransport is the first, and at this moment only, transport which is
+  // implemented. In the (draft) spec there are many mix-in interfaces which
+  // QuicTransport includes, but we define all their methods/attributes here
+  // for simplicity.
+
+  // From UnidirectionalStreamsTransport
+  // TODO(ricea): Change this to Promise<SendStream> once the IDL compiler is
+  // fixed. See https://crbug.com/1047113.
+  [CallWith=ScriptState, RaisesException] Promise<SendStream>
+      createSendStream();
+
+  // From DatagramTransport mixin
+  WritableStream sendDatagrams();
+  ReadableStream receiveDatagrams();
+
+  // From WebTransport mixin
+  void close(optional WebTransportCloseInfo closeInfo = {});
+  readonly attribute Promise<void> ready;
+  readonly attribute Promise<WebTransportCloseInfo> closed;
+};

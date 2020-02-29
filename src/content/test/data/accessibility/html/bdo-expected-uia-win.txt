@@ -1,0 +1,7 @@
+Document
+++Group IsControlElement=false
+++++Text Name='Some LTR text'
+++++Text Name=' '
+++++Text Name='Some RTL text '
+++++Text Name='with some LTR text embedded'
+<-- End-of-file -->

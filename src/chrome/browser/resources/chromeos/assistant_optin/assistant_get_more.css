@@ -1,0 +1,28 @@
+/* Copyright 2018 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file. */
+
+#intro-text {
+  padding-bottom: 58px;
+}
+
+#ready-img {
+  display: block;
+  height: 186px;
+  margin: auto;
+}
+
+.vertical-line {
+  background-color: rgb(218, 220, 224);
+  height: 186px;
+  margin: 0 24px 0 24px;
+  width: 1px;
+}
+
+#ready-image-container {
+  width: 50%;
+}
+
+#toggles-container {
+  width: 50%;
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "1.1",
+  "package_name": "infra/tools/luci/isolated/windows-386",
+  "version_file": ".versions/isolated.exe.cipd_version",
+  "files": [
+    {
+      "name": "isolated.exe",
+      "size": 13269504,
+      "hash": "Lz4Urgv-cbRrqrpJRKZNb9n7CHAE-pJzum_nql3ZVMwC"
+    },
+    {
+      "name": ".versions/isolated.exe.cipd_version",
+      "size": 126,
+      "hash": "Y4X02jrOSuUvMr_GGZHWZqjPiqQmyYXBs62z5FZGJvkC"
+    }
+  ]
+}

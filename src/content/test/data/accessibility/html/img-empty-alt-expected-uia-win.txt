@@ -1,0 +1,6 @@
+Document
+++Group IsControlElement=false
+++++Image IsControlElement=false
+++++Image
+++++Image Name='full'
+<-- End-of-file -->

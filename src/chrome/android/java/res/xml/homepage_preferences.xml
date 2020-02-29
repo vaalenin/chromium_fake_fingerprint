@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2015 The Chromium Authors. All rights reserved.
+     Use of this source code is governed by a BSD-style license that can be
+     found in the LICENSE file. -->
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <org.chromium.chrome.browser.settings.ChromeSwitchPreference
+        android:key="homepage_switch"
+        android:summaryOn="@string/text_on"
+        android:summaryOff="@string/text_off" />
+
+    <Preference
+        android:key="homepage_edit"
+        android:title="@string/options_homepage_edit_label"
+        android:visibility="gone"
+        android:fragment="org.chromium.chrome.browser.settings.homepage.HomepageEditor" />
+
+    <org.chromium.chrome.browser.settings.homepage.RadioButtonGroupHomepagePreference
+        android:key="homepage_radio_group"
+        android:visibility="gone"
+        android:selectable="false"
+        app:allowDividerBelow="false" />
+
+    <org.chromium.chrome.browser.settings.TextMessagePreference
+        android:key="text_managed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+</PreferenceScreen>

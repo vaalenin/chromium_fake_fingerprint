@@ -1,0 +1,4 @@
+Document
+++Group IsControlElement=false
+++++Edit Value.Value='Selection'
+<-- End-of-file -->

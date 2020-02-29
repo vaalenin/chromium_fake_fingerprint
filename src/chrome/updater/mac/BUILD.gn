@@ -1,0 +1,120 @@
+# Copyright 2019 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/mac/rules.gni")
+import("//chrome/updater/branding.gni")
+
+group("mac") {
+  deps = [
+    ":updater_bundle",
+    ":updater_install_script",
+    ":updater_setup",
+  ]
+}
+
+source_set("network_fetcher_sources") {
+  sources = [
+    "net/network.h",
+    "net/network_fetcher.h",
+    "net/network_fetcher.mm",
+  ]
+
+  deps = [
+    "//base",
+    "//components/crash/core/common:crash_key_lib",
+    "//components/update_client",
+    "//net",
+  ]
+}
+
+source_set("updater_tests") {
+  testonly = true
+
+  sources = [ "net/network_unittest.mm" ]
+
+  deps = [
+    ":network_fetcher_sources",
+    ":updater_setup_sources",
+    "//base/test:test_support",
+    "//net:test_support",
+    "//testing/gmock",
+    "//testing/gtest",
+  ]
+}
+
+mac_app_bundle("updater_bundle") {
+  info_plist = "Info.plist"
+  output_name = updater_product_full_name
+
+  sources = [ "main.cc" ]
+  deps = [
+    ":network_fetcher_sources",
+    ":updater_setup_sources",
+    "//chrome/updater:lib",
+  ]
+}
+
+source_set("updater_setup_sources") {
+  sources = [
+    "setup/setup.h",
+    "setup/setup.mm",
+  ]
+
+  deps = [
+    ":network_fetcher_sources",
+    "//base",
+    "//chrome/common/mac:launchd",
+    "//chrome/updater:base",
+    "//chrome/updater:version_header",
+    "//components/crash/core/common:crash_key_lib",
+    "//mojo/public/cpp/platform",
+  ]
+
+  allow_circular_includes_from = [ "//chrome/updater:base" ]
+
+  libs = [
+    "AppKit.framework",
+    "CoreServices.framework",
+    "ServiceManagement.framework",
+  ]
+}
+
+executable("updater_setup") {
+  sources = [ "setup/main.cc" ]
+
+  deps = [
+    ":updater_bundle",
+    ":updater_setup_sources",
+  ]
+}
+
+copy("updater_install_script") {
+  sources = [ "setup/.install.sh" ]
+  outputs = [ "$root_build_dir/chrome/updater/.install.sh" ]
+}
+
+source_set("installer_sources") {
+  sources = [
+    "installer.h",
+    "installer.mm",
+  ]
+
+  deps = [ "//base" ]
+}
+
+source_set("updater_setup_tests") {
+  testonly = true
+
+  sources = [ "setup/setup_unittest.mm" ]
+
+  data = [ "//chrome/test/data/updater/updater_setup_test_dmg.dmg" ]
+
+  deps = [
+    ":installer_sources",
+    "//base",
+    "//base/test:test_support",
+    "//chrome/common:constants",
+    "//testing/gtest",
+  ]
+}

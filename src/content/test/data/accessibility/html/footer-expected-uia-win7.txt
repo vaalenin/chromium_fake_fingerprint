@@ -1,0 +1,4 @@
+Document
+++Group LocalizedControlType='footer'
+++++Text Name='Footer element'
+<-- End-of-file -->

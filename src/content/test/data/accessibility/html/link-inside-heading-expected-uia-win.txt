@@ -1,0 +1,5 @@
+Document
+++Text Name='Link In Heading'
+++++Hyperlink Name='Link In Heading'
+++++++Text Name='Link In Heading' IsControlElement=false
+<-- End-of-file -->
