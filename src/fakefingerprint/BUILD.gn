@@ -1,0 +1,29 @@
+config("fakefingerprint_config") {
+  defines = [
+    "WIN32_LEAN_AND_MEAN ",
+  ]
+  include_dirs = [
+    "//third_party/MySQL/include/",
+    "//third_party/MySQL/include/mysql++/",
+  ]
+
+  lib_dirs = [
+    "//third_party/MySQL/x86_64/lib",
+    "//third_party/MySQL/x86_64/lib/vs14",
+  ]
+
+  libs = [
+    "libmysql.lib",
+    "mysqlclient.lib",
+  ]
+}
+
+static_library("fakefingerprint") {
+  sources = [
+    "FakeFingerprint.cc",
+  ]
+  
+  all_dependent_configs = [
+    ":fakefingerprint_config"
+  ]
+}
