@@ -599,6 +599,8 @@
 #include "chrome/browser/safe_browsing/cloud_content_scanning/deep_scanning_dialog_delegate.h"
 #endif
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 using base::FileDescriptor;
 using content::BrowserThread;
 using content::BrowserURLHandler;
@@ -1093,7 +1095,10 @@ void MaybeRecordSameSiteCookieEngagementHistogram(
 }  // namespace
 
 std::string GetUserAgent() {
-    return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108 Safari/537.36";
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetUserAgent();
+
   base::CommandLine* command_line = base::CommandLine::ForCurrentProcess();
   if (command_line->HasSwitch(switches::kUserAgent)) {
     std::string ua = command_line->GetSwitchValueASCII(switches::kUserAgent);

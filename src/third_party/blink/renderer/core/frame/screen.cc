@@ -36,6 +36,8 @@
 #include "third_party/blink/renderer/core/page/page.h"
 #include "third_party/blink/renderer/core/probe/core_probes.h"
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 namespace {
@@ -49,6 +51,10 @@ WebScreenInfo GetScreenInfo(LocalFrame& frame) {
 Screen::Screen(LocalFrame* frame) : DOMWindowClient(frame) {}
 
 int Screen::height() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetScreenHeight();
+
   if (display_) {
     DCHECK(RuntimeEnabledFeatures::ScreenEnumerationEnabled());
     return display_->bounds.height();
@@ -66,6 +72,10 @@ int Screen::height() const {
 }
 
 int Screen::width() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetScreenWidth();
+
   if (display_) {
     DCHECK(RuntimeEnabledFeatures::ScreenEnumerationEnabled());
     return display_->bounds.width();
@@ -83,6 +93,10 @@ int Screen::width() const {
 }
 
 unsigned Screen::colorDepth() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetColorDepth();
+
   if (display_) {
     DCHECK(RuntimeEnabledFeatures::ScreenEnumerationEnabled());
     return display_->color_depth;
@@ -132,6 +146,10 @@ int Screen::availTop() const {
 }
 
 int Screen::availHeight() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetAvailHeight();
+
   if (display_) {
     DCHECK(RuntimeEnabledFeatures::ScreenEnumerationEnabled());
     return display_->work_area.height();
@@ -149,6 +167,10 @@ int Screen::availHeight() const {
 }
 
 int Screen::availWidth() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetAvailWidth();
+
   if (display_) {
     DCHECK(RuntimeEnabledFeatures::ScreenEnumerationEnabled());
     return display_->work_area.width();

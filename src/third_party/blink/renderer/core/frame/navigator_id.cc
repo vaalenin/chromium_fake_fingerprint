@@ -41,23 +41,41 @@
 #include "third_party/blink/renderer/platform/wtf/threading.h"
 #endif
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 String NavigatorID::appCodeName() {
-  return "Mozilla";
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetAppCodeName().c_str();
+
+    return "Mozilla";
 }
 
 String NavigatorID::appName() {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetAppName().c_str();
+
   return "Netscape";
 }
 
 String NavigatorID::appVersion() {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetAppVersion().c_str();
+
   // Version is everything in the user agent string past the "Mozilla/" prefix.
   const String& agent = userAgent();
   return agent.Substring(agent.find('/') + 1);
 }
 
 String NavigatorID::platform() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetPlatform().c_str();
+
   // If the User-Agent string is frozen, platform should be a value
   // matching the frozen string per https://github.com/WICG/ua-client-hints. See
   // content::frozen_user_agent_strings.
@@ -91,6 +109,10 @@ String NavigatorID::platform() const {
 }
 
 String NavigatorID::product() {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetProduct().c_str();
+
   return "Gecko";
 }
 

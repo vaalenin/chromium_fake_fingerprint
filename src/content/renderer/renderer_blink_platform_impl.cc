@@ -695,8 +695,8 @@ static void Collect3DContextInformation(
   const gpu::GPUInfo::GPUDevice& active_gpu = gpu_info.active_gpu();
   gl_info->vendor_id = active_gpu.vendor_id;
   gl_info->device_id = active_gpu.device_id;
-  gl_info->renderer_info = WebString::FromUTF8(gpu_info.gl_renderer);
-  gl_info->vendor_info = WebString::FromUTF8(gpu_info.gl_vendor);
+  gl_info->renderer_info = "WebString::FromUTF8(gpu_info.gl_renderer)";
+  gl_info->vendor_info = "WebString::FromUTF8(gpu_info.gl_vendor)";
   gl_info->driver_version = WebString::FromUTF8(active_gpu.driver_version);
   gl_info->reset_notification_strategy =
       gpu_info.gl_reset_notification_strategy;

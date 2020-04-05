@@ -6,10 +6,16 @@
 
 #include "third_party/blink/public/common/device_memory/approximated_device_memory.h"
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 float NavigatorDeviceMemory::deviceMemory() const {
-  return ApproximatedDeviceMemory::GetApproximatedDeviceMemory();
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetDeviceMemory();
+
+    return ApproximatedDeviceMemory::GetApproximatedDeviceMemory();
 }
 
 }  // namespace blink

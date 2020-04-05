@@ -6,9 +6,15 @@
 
 #include "base/system/sys_info.h"
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 unsigned NavigatorConcurrentHardware::hardwareConcurrency() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetConcurrency();
+
   return static_cast<unsigned>(base::SysInfo::NumberOfProcessors());
 }
 

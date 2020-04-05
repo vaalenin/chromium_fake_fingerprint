@@ -34,6 +34,8 @@
 #include "third_party/blink/renderer/core/frame/local_frame_client.h"
 #include "third_party/blink/renderer/core/frame/navigator.h"
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 NavigatorDoNotTrack::NavigatorDoNotTrack(Navigator& navigator)
@@ -60,6 +62,10 @@ String NavigatorDoNotTrack::doNotTrack(Navigator& navigator) {
 }
 
 String NavigatorDoNotTrack::doNotTrack() {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetDoNotTrack().c_str();
+
   LocalFrame* frame = GetSupplementable()->GetFrame();
   if (!frame || !frame->Client())
     return String();

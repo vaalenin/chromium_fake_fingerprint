@@ -118,6 +118,8 @@
 #include "third_party/blink/renderer/platform/wtf/text/string_utf8_adaptor.h"
 #include "third_party/blink/renderer/platform/wtf/threading_primitives.h"
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 bool WebGLRenderingContextBase::webgl_context_limits_initialized_ = false;
@@ -3367,21 +3369,39 @@ ScriptValue WebGLRenderingContextBase::getParameter(ScriptState* script_state,
           "invalid parameter name, OES_standard_derivatives not enabled");
       return ScriptValue::CreateNull(script_state->GetIsolate());
     case WebGLDebugRendererInfo::kUnmaskedRendererWebgl:
-      if (ExtensionEnabled(kWebGLDebugRendererInfoName))
-        return WebGLAny(script_state,
-                        String(ContextGL()->GetString(GL_RENDERER)));
-      SynthesizeGLError(
-          GL_INVALID_ENUM, "getParameter",
-          "invalid parameter name, WEBGL_debug_renderer_info not enabled");
-      return ScriptValue::CreateNull(script_state->GetIsolate());
+    {
+        const auto& ff = FakeFingerprint::Instance();
+        if (ff)
+        { 
+            return WebGLAny(script_state,
+                String(ff.GetWebGLVendor().c_str()));
+        }
+
+        if (ExtensionEnabled(kWebGLDebugRendererInfoName))
+            return WebGLAny(script_state,
+                String("ContextGL()->GetString(GL_RENDERER)"));
+        SynthesizeGLError(
+            GL_INVALID_ENUM, "getParameter",
+            "invalid parameter name, WEBGL_debug_renderer_info not enabled");
+        return ScriptValue::CreateNull(script_state->GetIsolate());
+    }
     case WebGLDebugRendererInfo::kUnmaskedVendorWebgl:
-      if (ExtensionEnabled(kWebGLDebugRendererInfoName))
-        return WebGLAny(script_state,
-                        String(ContextGL()->GetString(GL_VENDOR)));
-      SynthesizeGLError(
-          GL_INVALID_ENUM, "getParameter",
-          "invalid parameter name, WEBGL_debug_renderer_info not enabled");
-      return ScriptValue::CreateNull(script_state->GetIsolate());
+    {
+        const auto& ff = FakeFingerprint::Instance();
+        if (ff)
+        {
+            return WebGLAny(script_state,
+                String(ff.GetWebGL().c_str()));
+        }
+
+        if (ExtensionEnabled(kWebGLDebugRendererInfoName))
+            return WebGLAny(script_state,
+                String("ContextGL()->GetString(GL_VENDOR)"));
+        SynthesizeGLError(
+            GL_INVALID_ENUM, "getParameter",
+            "invalid parameter name, WEBGL_debug_renderer_info not enabled");
+        return ScriptValue::CreateNull(script_state->GetIsolate());
+    }
     case GL_VERTEX_ARRAY_BINDING_OES:  // OES_vertex_array_object
       if (ExtensionEnabled(kOESVertexArrayObjectName) || IsWebGL2OrHigher()) {
         if (!bound_vertex_array_object_->IsDefaultObject())

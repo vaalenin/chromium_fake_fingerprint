@@ -35,6 +35,8 @@
 #include "third_party/blink/renderer/platform/instrumentation/memory_pressure_listener.h"
 #include "third_party/blink/renderer/platform/language.h"
 
+#include "fakefingerprint/FakeFingerprint.h"
+
 namespace blink {
 
 Navigator::Navigator(LocalFrame* frame)
@@ -43,6 +45,10 @@ Navigator::Navigator(LocalFrame* frame)
       DOMWindowClient(frame) {}
 
 String Navigator::productSub() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetProductSub().c_str();
+
   return "20030107";
 }
 
@@ -51,10 +57,18 @@ String Navigator::vendor() const {
   // https://code.google.com/p/chromium/issues/detail?id=276813
   // https://www.w3.org/Bugs/Public/show_bug.cgi?id=27786
   // https://groups.google.com/a/chromium.org/forum/#!topic/blink-dev/QrgyulnqvmE
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetVendor().c_str();
+
   return "Google Inc.";
 }
 
 String Navigator::vendorSub() const {
+    const auto& ff = FakeFingerprint::Instance();
+    if (ff)
+        return ff.GetVendorSub().c_str();
+
   return "";
 }
 
