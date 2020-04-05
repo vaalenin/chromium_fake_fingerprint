@@ -766,6 +766,7 @@ namespace daotk {
 
 		protected:
 			MYSQL* my_conn;
+            char* error;
 			mutable std::mutex mutex;	// mutex needs to be locked while using a prepared stmt
 
 		public:
@@ -779,7 +780,7 @@ namespace daotk {
 				if (my_conn == nullptr) return false;
 
 				if (options.autoreconnect) { 
-					my_bool b = options.autoreconnect;
+                    my_bool b = options.autoreconnect;
 					mysql_options(my_conn, MYSQL_OPT_RECONNECT, &b);
 				}
 				if (!options.charset.empty()) mysql_options(my_conn, MYSQL_SET_CHARSET_NAME, options.charset.c_str());
@@ -787,9 +788,10 @@ namespace daotk {
 				if (options.timeout > 0) mysql_options(my_conn, MYSQL_OPT_CONNECT_TIMEOUT, (char*)&options.timeout);
 
 				if (nullptr == mysql_real_connect(my_conn, options.server.c_str(), options.username.c_str(), options.password.c_str(), options.dbname.c_str(), options.port, NULL, options.client_flag)) {
-					mysql_close(my_conn);
+                    error = (char*)mysql_error(my_conn);
+                    mysql_close(my_conn); 
 					my_conn = nullptr;
-					return false;
+					return false; 
 				}
 
 				return true;
@@ -872,7 +874,7 @@ namespace daotk {
 			result query(const std::string& query_str) {
 				std::lock_guard<std::mutex> mg(mutex);
 
-				int ret = mysql_real_query(my_conn, query_str.c_str(), query_str.length());
+				int ret = mysql_real_query(my_conn, query_str.c_str(), (unsigned long)query_str.length());
                 if (ret != 0) {}//throw mysql_exception{ my_conn };
 
 				return result{ my_conn, false };
@@ -888,7 +890,7 @@ namespace daotk {
 			std::vector<result> mquery(const std::string& query_str) {
 				std::lock_guard<std::mutex> mg(mutex);
 
-				int ret = mysql_real_query(my_conn, query_str.c_str(), query_str.length());
+				int ret = mysql_real_query(my_conn, query_str.c_str(), (unsigned long) query_str.length());
                 if (ret != 0) {}//throw mysql_exception{ my_conn };
 
 				std::vector<result> res;
@@ -909,7 +911,7 @@ namespace daotk {
 			void exec(const std::string& query_str) {
 				std::lock_guard<std::mutex> mg(mutex);
 
-				int ret = mysql_real_query(my_conn, query_str.c_str(), query_str.length());
+				int ret = mysql_real_query(my_conn, query_str.c_str(), (unsigned long)query_str.length());
                 if (ret != 0) {}//throw mysql_exception{ my_conn };
 
 				// mysql_use_result must be called for SELECT, SHOW,...
@@ -1067,10 +1069,10 @@ namespace daotk {
 					memset(bind, 0x00, sizeof(MYSQL_BIND));
 					if (data != nullptr) {
 						bind->buffer = (void*)data->data();
-						bind->buffer_length = data->size();
+						bind->buffer_length = (unsigned long) data->size();
 						bind->buffer_type = MYSQL_TYPE_STRING;
 						bind->is_null_value = false;
-						bind->length_value = data->size();
+						bind->length_value = (unsigned long) data->size();
 					}
 					else {
 						bind->buffer_type = MYSQL_TYPE_NULL;
@@ -1084,7 +1086,7 @@ namespace daotk {
 					// libmysql debug build breaks if buffer_length is 0
 					data->resize(1);
 					bind->buffer = (void*)data->data();
-					bind->buffer_length = data->size();
+					bind->buffer_length = (unsigned long) data->size();
 					bind->is_null_value = false;
 					bind->length = &bind->length_value;
 					bind->is_null = &bind->is_null_value;
@@ -1093,7 +1095,7 @@ namespace daotk {
 					if (bind->length_value > 0) {
 						data->resize(bind->length_value);
 						bind->buffer = (void*)data->data();
-						bind->buffer_length = data->size();
+						bind->buffer_length = (unsigned long)data->size();
 						return true;
 					}
 					else {
@@ -1111,7 +1113,7 @@ namespace daotk {
 					memset(bind, 0x00, sizeof(MYSQL_BIND));
 					if (data->has_value()) {
 						bind->buffer = (void*)data->value().data();
-						bind->buffer_length = data->value().size();
+						bind->buffer_length = (unsigned long)data->value().size();
 						bind->buffer_type = MYSQL_TYPE_STRING;
 						bind->is_null_value = false;
 						bind->length_value = bind->buffer_length;
@@ -1133,7 +1135,7 @@ namespace daotk {
 					auto& pdata = data->value();
 					pdata.resize(1);
 					bind->buffer = (void*)pdata.data();
-					bind->buffer_length = pdata.size();
+					bind->buffer_length = (unsigned long)pdata.size();
 					bind->is_null_value = false;
 					bind->length = &bind->length_value;
 					bind->is_null = &bind->is_null_value;
@@ -1149,7 +1151,7 @@ namespace daotk {
 						if (bind->length_value > 0) {
 							pdata.resize(bind->length_value);
 							bind->buffer = (void*)pdata.data();
-							bind->buffer_length = pdata.size();
+							bind->buffer_length = (unsigned long)pdata.size();
 							return true;
 						}
 						else {
@@ -1259,7 +1261,7 @@ namespace daotk {
                 {
                 }//throw std::bad_alloc();
 
-                if (mysql_stmt_prepare(stmt.get(), query.c_str(), query.size()))
+                if (mysql_stmt_prepare(stmt.get(), query.c_str(), (unsigned long)query.size()))
                 {
                 }//throw std::runtime_error(std::string("Failed to prepare stmt: ") + mysql_stmt_error(stmt.get()));
 
