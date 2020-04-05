@@ -216,6 +216,7 @@ component("core") {
     "//third_party/blink/renderer/core/xmlhttprequest",
     "//url",
     "//v8",
+    "//fakefingerprint",
   ]
   deps = [
     "//components/paint_preview/common",

@@ -16,6 +16,7 @@ config("fakefingerprint_config") {
     "libmysql.lib",
     "mysqlclient.lib",
   ]
+  
 }
 
 static_library("fakefingerprint") {
@@ -23,7 +24,18 @@ static_library("fakefingerprint") {
     "FakeFingerprint.cc",
   ]
   
+  deps = [
+    "//base",
+    "//base/third_party/dynamic_annotations",
+    "//device/gamepad/public/mojom",
+    "//fakefingerprint/public/mojom",
+    "//mojo/public/cpp/system",
+  ]
+  
   all_dependent_configs = [
     ":fakefingerprint_config"
   ]
 }
+
+
+

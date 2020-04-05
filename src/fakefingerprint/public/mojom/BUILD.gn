@@ -1,0 +1,10 @@
+import("//mojo/public/tools/bindings/mojom.gni")
+
+mojom_component("mojom") {
+  sources = [ "FakeFingerprint.mojom" ]
+
+  deps = [ "//mojo/public/mojom/base" ]
+
+  output_prefix = "FakeFingerprint_mojom"
+  macro_prefix = "FAKEFINGERPRINT_MOJOM"
+}

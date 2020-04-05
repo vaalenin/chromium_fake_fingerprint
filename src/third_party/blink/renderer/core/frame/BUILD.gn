@@ -211,4 +211,8 @@ blink_core_sources("frame") {
     "window_or_worker_global_scope.cc",
     "window_or_worker_global_scope.h",
   ]
+
+  deps = [
+    "//fakefingerprint",
+  ]
 }

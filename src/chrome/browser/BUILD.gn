@@ -1949,6 +1949,7 @@ jumbo_static_library("browser") {
     "//services/data_decoder/public/mojom",
     "//services/image_annotation/public/mojom",
     "//sql",
+    "//fakefingerprint",
   ]
   deps = [
     ":active_use_util",

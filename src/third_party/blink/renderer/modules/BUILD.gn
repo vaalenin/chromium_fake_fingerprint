@@ -173,6 +173,7 @@ jumbo_component("modules") {
     "//third_party/icu",
     "//third_party/webrtc_overrides:webrtc_component",
     "//third_party/zlib",
+    "//fakefingerprint",
   ]
 
   public_deps = sub_modules
