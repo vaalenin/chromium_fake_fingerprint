@@ -1,13 +1,22 @@
 #pragma once
+#ifndef FAKEFINGERPRINT_H_
+#define FAKEFINGERPRINT_H_
 
 #include <memory>
+#include <fstream>
 #define NO_STD_OPTIONAL
 #define NDEBUG
 #include "mysql++/mysql+++.h"
 
-struct FakeFingerprintFields;
+#include "base/memory/read_only_shared_memory_region.h"
+#include "content/public/renderer/render_thread.h"
+#include "fakefingerprint/public/mojom/FakeFingerprint.mojom.h"
+#include "FakeFingerprint_messages.h"
 
-class FakeFingerprint
+struct SystemSharedData;
+struct FakeFingerprintFields;
+struct PluginInfo;
+class FakeFingerprint: public device::mojom::FakeFingerprintSharedMemory
 {
 public:
     static const FakeFingerprint& Instance();
@@ -19,32 +28,32 @@ public:
     std::string GetSource() const;
     std::string GetSysOS() const;
     std::string GetSBuildID() const;
-    std::string GetPlugins() const;
+    const std::vector <PluginInfo>& GetPlugins() const;
     std::string GetMIMETypes() const;
     std::string GetPlatform() const;//1
     std::string GetProductSub() const;//1
-    std::string GetDoNotTrack() const;
-    std::string GetScreenHeight() const;
-    std::string GetScreenWidth() const;
-    std::string GetAvailHeight() const;
-    std::string GetAvailWidth() const;
+    std::string GetDoNotTrack() const;//1
+    int GetScreenHeight() const; //1
+    int GetScreenWidth() const; //1
+    int GetAvailHeight() const;//1
+    int GetAvailWidth() const;//1
     std::string GetOSCPU() const;
     std::string GetAppCodeName() const;//1
     std::string GetAppName() const;//1
     std::string GetAppVersion() const; //1
     std::string GetUserAgent() const; //1
-    std::string GetConcurrency() const;
+    unsigned GetConcurrency() const;//1
     std::string GetProduct() const;//1
     std::string GetVendor() const;//1
     std::string GetVendorSub() const;//1
-    std::string GetInnerWidth() const;
-    std::string GetInnerHeight() const;
+    int GetInnerWidth() const;
+    int GetInnerHeight() const;
     std::string GetNavigatorLanguage() const;
     std::string GetNavigatorLanguages() const;
-    std::string GetColorDepth() const;
-    std::string GetDeviceMemory() const;
+    int GetColorDepth() const;//1
+    int GetDeviceMemory() const;//1
     std::string GetPixelRatio() const;
-    std::string GetTimezoneOffset() const;
+    int GetTimezoneOffset() const;//1
     std::string GetSessionStorage() const;
     std::string GetLocalStorage() const;
     std::string GetIndexedDB() const;
@@ -62,10 +71,14 @@ public:
     std::string GetJSFonts() const;
     std::string GetIP() const;
 
+   // void GetSharedMemory(::base::ReadOnlySharedMemoryRegion memoryRegion) override;
+    void Ping(PingCallback callback) override;
+    //void  OnPong(int32_t r);
+
     operator bool() const;
 private:
     FakeFingerprint();
-    virtual ~FakeFingerprint();
+    ~FakeFingerprint() override;
 
     std::vector <FakeFingerprintFields> fields;
     std::unique_ptr <daotk::mysql::connection> conn;
@@ -73,5 +86,20 @@ private:
     bool isEnabled = false;
 
     FakeFingerprintFields* currentField = nullptr;
+    std::unique_ptr<FakeFingerprintFields> readedField;
+
+    base::ReadOnlySharedMemoryRegion sharedMemoryRegion, sharedMemoryRegionRO;
+    base::WritableSharedMemoryMapping sharedMemoryMapping;
+    base::ReadOnlySharedMemoryMapping sharedMemoryMappingRO;
+    SystemSharedData* buffer;
+
+    std::ofstream file;
+
+    bool CreateSharedMemory(const void* data = nullptr, size_t size = 0);
+    void OpenSharedMemory();
+
+    mojo::Remote <device::mojom::FakeFingerprintSharedMemory> ping_responder;
+    mojo::PendingReceiver <device::mojom::FakeFingerprintSharedMemory> receiver;
 };
 
+#endif
