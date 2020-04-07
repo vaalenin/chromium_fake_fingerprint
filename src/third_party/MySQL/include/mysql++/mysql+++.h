@@ -1252,7 +1252,7 @@ namespace daotk {
 
 		public:
 			prepared_stmt(connection& pcon, const std::string& query)
-				: con(pcon), stmt(nullptr, [](MYSQL_STMT* stmt) { mysql_stmt_close(stmt); }), param_binds(0), result_binds(0)
+				: con(pcon), stmt(nullptr, [](MYSQL_STMT* stmt1) { mysql_stmt_close(stmt1); }), param_binds(0), result_binds(0)
 			{
 				std::unique_lock<std::mutex> lck(con.mutex);
 				stmt.reset(mysql_stmt_init(con.my_conn));
