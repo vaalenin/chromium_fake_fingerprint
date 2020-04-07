@@ -56,7 +56,7 @@ class CORE_EXPORT Navigator final : public ScriptWrappable,
   // NavigatorCookies
   bool cookieEnabled() const;
 
-  bool webdriver() const { return true; }
+  bool webdriver() const { return false; }
 
   String productSub() const;
   String vendor() const;
